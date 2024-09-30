@@ -330,14 +330,16 @@ impl Dfa<char, char> {
                         let mut is_s2_used = false;
 
                         new_list.iter_mut()
-                            .filter(|new_sublist| sublist != *new_sublist)
+                            .filter(|new_sublist| {
+                                !(new_sublist.contains(&s1) || new_sublist.contains(&s2))
+                            })
                             .for_each(|sublist| {
-                                if !sublist.contains(&s1) && 
+                                if !sublist.contains(&s1) && !is_s1_used &&
                                     is_equivalent(sublist[0], s1, &state_to_transitions, &state_to_list_idx) 
                                 {
                                     sublist.push(s1);
                                     is_s1_used = true;
-                                } else if !sublist.contains(&s2) &&
+                                } else if !sublist.contains(&s2) && !is_s2_used &&
                                     is_equivalent(sublist[0], s2, &state_to_transitions, &state_to_list_idx) 
                                 {
                                     sublist.push(s2);
