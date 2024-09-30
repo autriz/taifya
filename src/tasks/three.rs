@@ -51,4 +51,5 @@ fn three() {
 
     println!("{}", dfa);
     println!("{}", dfa.transitions);
+    println!("{:?}", dfa.state_combo_to_state_map);
 }
