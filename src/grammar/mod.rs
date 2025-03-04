@@ -257,7 +257,42 @@ impl Grammar {
     }
 
     fn remove_empty_rules(&mut self) {
+        let mut list = vec![];
 
+        list.append(&mut self.rules.iter()
+            .filter(|rule| rule.variants.iter()
+                .any(|variant| variant.contains(&Self::EMPTY_SEQUENCE))
+            )
+            .map(|rule| rule.input[0])
+            .collect::<Vec<char>>());
+
+        loop {
+            let mut new_list = list.clone();
+
+            for rule in &self.rules {
+                if !new_list.contains(&rule.input[0]) {
+                    if rule.variants.iter()
+                        .any(|variant| {
+                            variant.iter()
+                                .any(|sym| new_list.contains(sym)
+                            )
+                        })
+                    {
+                        new_list.push(rule.input[0]);
+                    }
+                }
+            }
+
+            if new_list == list {
+                break;
+            } else {
+                list = new_list.clone();
+            }
+        }
+
+        
+
+        println!("{list:?}");
     }
 
     pub fn make_equivalent(&mut self) {
@@ -491,6 +526,31 @@ mod test {
 
         assert_eq!(grammar.non_terminals, vec!['S'], "Invalid non-terminals, got: {:?}", grammar.non_terminals);
         assert_eq!(grammar.terminals, vec!['a', 'b'], "Invalid terminals, got: {:?}", grammar.terminals);
+    }
+
+    #[test]
+    fn test_remove_empty_sequence_rules() {
+        let mut grammar = generate!{
+            {'0', '1'},
+            {'S', 'A', 'B'},
+            {
+                "S" -> "AB",
+                "A" -> "0A" | "ε",
+                "B" -> "1B" | "ε"
+            },
+            'S'
+        }.expect("Failed to generate grammar");
+
+        println!("{}", grammar);
+        println!("{}", grammar.grammar_type);
+
+        grammar.remove_empty_rules();
+
+        println!("{}", grammar);
+        println!("{}", grammar.grammar_type);
+
+        // assert_eq!(grammar.non_terminals, vec!['S'], "Invalid non-terminals, got: {:?}", grammar.non_terminals);
+        // assert_eq!(grammar.terminals, vec!['a', 'b'], "Invalid terminals, got: {:?}", grammar.terminals);
     }
 
     #[test]

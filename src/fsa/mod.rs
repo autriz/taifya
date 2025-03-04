@@ -30,7 +30,7 @@ impl Display for FSAType {
 }
 
 #[derive(Debug)]
-pub enum FiniteAutomataError {
+pub enum FiniteAutomatonError {
     // Означает, что тип грамматики не подходит.
     InavlidGrammarType
 }

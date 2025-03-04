@@ -4,4 +4,6 @@ pub mod grammar;
 
 pub mod fsa;
 
+pub mod pushdown;
+
 mod tasks;

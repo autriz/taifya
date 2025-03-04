@@ -2,7 +2,7 @@ use std::{collections::HashMap, fmt::Display, hash::Hash};
 
 use crate::grammar::{Grammar, GrammarType, RegularType};
 
-use super::{Dfa, FiniteAutomataError, StateTransitionTable};
+use super::{Dfa, FiniteAutomatonError, StateTransitionTable};
 
 /// Недетерминированный конечный автомат принимает вид
 /// M = (Q, T, F, H, Z), где 
@@ -54,11 +54,11 @@ impl<State: Copy + Eq + Hash, Input: Copy> Display for Nfa<State, Input>
 }
 
 impl TryFrom<Grammar> for Nfa<char, char> {
-    type Error = FiniteAutomataError;
+    type Error = FiniteAutomatonError;
 
     fn try_from(mut grammar: Grammar) -> Result<Self, Self::Error> {
         if grammar.grammar_type != GrammarType::Regular(RegularType::Right) {
-            return Err(FiniteAutomataError::InavlidGrammarType);
+            return Err(FiniteAutomatonError::InavlidGrammarType);
         }
 
         let closing_non_terminal = if grammar.non_terminals.contains(&'N') {
@@ -153,7 +153,7 @@ impl Nfa<char, char> {
         transitions: StateTransitionTable, 
         starting_states: Vec<char>, 
         closing_states: Vec<char>
-    ) -> Result<Self, FiniteAutomataError> {
+    ) -> Result<Self, FiniteAutomatonError> {
         // check for invalid starting states, closing states, transitions
 
         Ok(Self {

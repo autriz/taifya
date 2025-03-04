@@ -2,7 +2,7 @@ use std::{collections::HashMap, fmt::Display, hash::Hash};
 
 use crate::grammar::Grammar;
 
-use super::{Nfa, FiniteAutomataError, StateTransitionTable};
+use super::{Nfa, FiniteAutomatonError, StateTransitionTable};
 
 /// Детерминированный конечный автомат принимает вид
 /// M = (Q, T, F, H, Z), где 
@@ -57,7 +57,7 @@ impl<State: Copy + Eq + Hash, Input: Copy> Display for Dfa<State, Input>
 }
 
 impl TryFrom<Grammar> for Dfa<char, char> {
-    type Error = FiniteAutomataError;
+    type Error = FiniteAutomatonError;
 
     fn try_from(grammar: Grammar) -> Result<Self, Self::Error> {
         Nfa::<char, char>::try_from(grammar)
@@ -74,7 +74,7 @@ impl Dfa<char, char> {
         closing_states: Vec<char>,
         state_combo_to_state_map: HashMap<Vec<char>, char>,
         state_to_state_combo_map: HashMap<char, Vec<char>>,
-    ) -> Result<Self, FiniteAutomataError> {
+    ) -> Result<Self, FiniteAutomatonError> {
         // validate maps, transitions, starting/closing states
 
         Ok(Self {
